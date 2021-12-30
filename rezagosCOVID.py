@@ -84,6 +84,10 @@ min_err = escalas.E.min()
 dmin, hmin, emin = escalas[escalas.E == min_err].reset_index().values[0]
 print("Rezago (d): {} días\nescala (h): {}\nerror: {}".format(dmin, hmin, emin))
 
+# comparación entre datos reales y modelo
+comp = pd.DataFrame(casos_hosp.H)
+comp['Modelo'] = hmin * casos.C.shift(int(dmin))
+
 # proyección
 futuro = casos[casos.index > pd.to_datetime(FECHA_CORTE)].copy()
 futuro['H'] = (hmin * futuro.C.shift(int(dmin)))
@@ -113,5 +117,11 @@ futuro.H.plot()
 plt.title("Proyección hospitalizaciones")
 plt.xlabel('dias')
 plt.ylabel('cantidad')
-
 plt.show()
+
+
+comp.plot()
+plt.title("Comparación entre datos reales y modelo")
+plt.ylabel('hospitalizaciones')
+plt.show()
+
